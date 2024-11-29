@@ -1,0 +1,37 @@
+# PostgreSQL. Versions 9.3 and up are supported.
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: spy
+  password: spy
+  host: localhost
+
+development:
+  <<: *default
+  database: thinktank_development
+
+test:
+  <<: *default
+  database: thinktank_test
+
+production:
+  primary: &primary_production
+    <<: *default
+    database: thinktank_production
+    username: thinktank
+    password: <%= ENV["THINKTANK_DATABASE_PASSWORD"] %>
+  cache:
+    <<: *primary_production
+    database: thinktank_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: thinktank_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: thinktank_production_cable
+    migrations_paths: db/cable_migrate
